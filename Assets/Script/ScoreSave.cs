@@ -9,6 +9,7 @@ public class ScoreSave : MonoBehaviour
     void Start()
     {
         highScore = PlayerPrefs.GetInt("HighScore", 0);
+        PlayerPrefs.DeleteKey("CurrentScore");
         if (UIManager.instance != null)
         {
             UIManager.instance.IsScoreText(score.ToString());
@@ -18,6 +19,7 @@ public class ScoreSave : MonoBehaviour
     public void IncrementScore()
     {
         score++;
+        SaveCurrentScore();
         if (score > highScore)
         {
             highScore = score;
@@ -25,5 +27,18 @@ public class ScoreSave : MonoBehaviour
             UIManager.instance.IsHighScoreText(highScore.ToString());
         }
         UIManager.instance.IsScoreText(score.ToString());
+    }
+    void SaveCurrentScore()
+    {
+        PlayerPrefs.SetInt("CurrentScore", score);
+    }
+    public void SaveBeforeExit()
+    {
+        PlayerPrefs.SetInt("CurrentScore", score);
+        PlayerPrefs.Save();
+    }
+    public int GetScore()
+    {
+        return score;
     }
 }

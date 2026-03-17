@@ -6,24 +6,41 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public GameObject theBall;
-    public float spawnTime = 2f ;
+    private float spawnTime;
+    [SerializeField] float baseSpawnTime = 2f;
+    [SerializeField] float minSpawnTime = 0.5f;
+    [SerializeField] float decreaseRate = 0.05f;
+    ScoreSave scoreSave;
     float currentSpawnTime;
     bool isGameOver;
 
+    private void Awake()
+    {
+        scoreSave = FindObjectOfType<ScoreSave>();
+    }
     void Start()
     {
         
+        Time.timeScale = 1;
+        spawnTime = baseSpawnTime;
         currentSpawnTime = spawnTime;
         isGameOver = false;
         
     }
-    private void Update()
+    void Update()
     {
-        if (isGameOver) { 
-            return;
+        if (isGameOver) return;
+
+        int score = scoreSave != null ? scoreSave.GetScore() : 0;
+
+        float newSpawnTime = Mathf.Max(minSpawnTime, baseSpawnTime - score * decreaseRate);
+
+        if (Mathf.Abs(newSpawnTime - spawnTime) > 0.01f)
+        {
+            spawnTime = newSpawnTime;
+            currentSpawnTime = spawnTime; 
         }
         currentSpawnTime -= Time.deltaTime;
-
         if (currentSpawnTime <= 0)
         {
             SpawnBall();
@@ -46,6 +63,7 @@ public class GameController : MonoBehaviour
 
     public void Replay()
     {
+        PlayerPrefs.DeleteKey("CurrentScore");
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
