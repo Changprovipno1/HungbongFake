@@ -9,6 +9,7 @@ public class MenuButton : MonoBehaviour
     [SerializeField] private ScoreSave scoreSave;
     public void OnButtonNewGame( string name)
     {
+        PlayerPrefs.SetInt("IsContinue", 0);
         PlayerPrefs.DeleteKey("CurrentScore");
         SceneManager.LoadScene(name);
     }
@@ -22,6 +23,7 @@ public class MenuButton : MonoBehaviour
     }
     public void OnButtonContinue(string name)
     {
+        PlayerPrefs.SetInt("IsContinue", 1);
         SceneManager.LoadScene(name);
     }
     public void BackToMenu(string name)

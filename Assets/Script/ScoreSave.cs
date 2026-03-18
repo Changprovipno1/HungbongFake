@@ -9,7 +9,17 @@ public class ScoreSave : MonoBehaviour
     void Start()
     {
         highScore = PlayerPrefs.GetInt("HighScore", 0);
-        PlayerPrefs.DeleteKey("CurrentScore");
+        int isContinue = PlayerPrefs.GetInt("IsContinue", 0);
+
+        if (isContinue == 1)
+        {
+            score = PlayerPrefs.GetInt("CurrentScore", 0);
+        }
+        else
+        {
+            score = 0;
+            PlayerPrefs.DeleteKey("CurrentScore");
+        }
         if (UIManager.instance != null)
         {
             UIManager.instance.IsScoreText(score.ToString());
